@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoomed In</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 1s ease-out;
+            overflow: hidden;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                clip-path: circle(0% at center);
+            }
+            to {
+                clip-path: circle(100% at center);
+            }
+        }
+
+        .zoom-transition {
+            animation: zoomToSpace 1s ease-in forwards;
+        }
+
+        @keyframes zoomToSpace {
+            from {
+                clip-path: circle(100% at center);
+            }
+            to {
+                clip-path: circle(0% at center);
+            }
+        }
+
+        .zoom-out {
+            animation: zoomOut 1s ease-in forwards;
+        }
+
+        @keyframes zoomOut {
+            from {
+                clip-path: circle(100% at center);
+            }
+            to {
+                clip-path: circle(0% at center);
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="whiteWebCanvas"></canvas>
+    <script>
+        // Preload all water drip sounds
+        const sounds = [];
+        for (let i = 1; i <= 6; i++) {
+            const audio = new Audio(`Assets/Waterdrip${i}.mp3`);
+            sounds.push(audio);
+        }
+
+        // Function to play random water drip sound
+        function playRandomDrip() {
+            const randomIndex = Math.floor(Math.random() * sounds.length);
+            const sound = sounds[randomIndex];
+            sound.currentTime = 0; // Reset sound to start
+            sound.play();
+        }
+
+        // Add click event listener to the entire document
+        document.addEventListener('click', playRandomDrip);
+
+        // Handle zoom transition
+        let zoomLevel = 1;
+        const ZOOM_SPEED = 0.1;
+        const MAX_ZOOM = 5;
+        const MIN_ZOOM = 0.2;
+
+        window.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            
+            if (e.deltaY > 0) { // Scrolling down = zoom in
+                zoomLevel += ZOOM_SPEED;
+                
+                if (zoomLevel >= MAX_ZOOM) {
+                    document.body.classList.add('zoom-transition');
+                    setTimeout(() => {
+                        window.location.href = 'space.html';
+                    }, 900);
+                }
+            } else if (e.deltaY < 0) { // Scrolling up = zoom out
+                zoomLevel -= ZOOM_SPEED;
+                
+                if (zoomLevel <= MIN_ZOOM) {
+                    document.body.classList.add('zoom-out');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 900);
+                }
+            }
+        }, { passive: false });
+    </script>
+    <script src="whiteweb.js"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space</title>
+    <link rel="stylesheet" href="space.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        .collage-image {
+            position: fixed;
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .visible {
+            opacity: 1;
+        }
+        
+        /* Audio controls style - hide visually but remain accessible */
+        .audio-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            opacity: 0.3;
+            transition: opacity 0.3s ease;
+        }
+        
+        .audio-controls:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background audio that plays automatically -->
+    <audio id="background-audio" autoplay loop>
+        <source src="Assets/space.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <!-- Small audio controls in corner -->
+    <div class="audio-controls">
+        <button onclick="toggleAudio()" id="audio-toggle">Mute</button>
+    </div>
+    
+    <video id="background-video" autoplay muted loop playsinline>
+        <source src="Assets/space.mp4" type="video/mp4">
+    </video>
+    <div class="background-overlay"></div>
+    <div class="animated-container fade-in">
+        <canvas id="spaceCanvas"></canvas>
+    </div>
+    
+    <script>
+        // Audio control functionality
+        const audioElement = document.getElementById('background-audio');
+        const audioToggle = document.getElementById('audio-toggle');
+        
+        function toggleAudio() {
+            if (audioElement.paused) {
+                audioElement.play();
+                audioToggle.textContent = 'Mute';
+            } else {
+                audioElement.pause();
+                audioToggle.textContent = 'Play';
+            }
+        }
+        
+        // Start audio when user interacts with the page (to comply with autoplay policies)
+        document.addEventListener('click', function() {
+            if (audioElement.paused) {
+                audioElement.play();
+            }
+        }, { once: true });
+    </script>
+    
+    <script src="space.js"></script>
+</body>
+</html>
